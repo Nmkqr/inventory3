@@ -39,28 +39,28 @@
       position:relative;
       overflow-x:hidden;
     }
-/* توسيط العنوان والوصف في منتصف الصفحة */
-.header{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
+    /* توسيط العنوان والوصف في منتصف الصفحة */
+    .header{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
 
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%, -50%);
-  margin:0;
-  padding:0;
-  z-index:1; /* فوق الأمواج */
-}
+      position:absolute;
+      top:50%;
+      left:50%;
+      transform:translate(-50%, -50%);
+      margin:0;
+      padding:0;
+      z-index:1; /* فوق الأمواج */
+    }
 
-/* أحجام أصغر للجوال */
-@media (max-width:768px){
-  .title{   font-size:2rem;  line-height:2.5rem; }
-  .subtitle{font-size:1.2rem; line-height:2rem; }
-}
+    /* أحجام أصغر للجوال */
+    @media (max-width:768px){
+      .title{   font-size:2rem;  line-height:2.5rem; }
+      .subtitle{font-size:1.2rem; line-height:2rem; }
+    }
 
     /* ===========================
        خلفية الأمواج المتحركة
@@ -163,37 +163,37 @@
       0%{ background-position:-800px 0; }
       100%{ background-position:800px 0; }
     }
-/* === تكبير/تصغير ذكي لحجم خانة الكتابة مع تمركز في النص === */
-.typing-area { background: transparent; }
+    /* === تكبير/تصغير ذكي لحجم خانة الكتابة مع تمركز في النص === */
+    .typing-area { background: transparent; }
 
-.typing-form{
-  max-width: 980px;         /* حدود عليا مثل الهيدر */
-  margin: 0 auto;
-  justify-content: center;  /* تمركز العناصر */
-  gap: .75rem;
-}
+    .typing-form{
+      max-width: 980px;         /* حدود عليا مثل الهيدر */
+      margin: 0 auto;
+      justify-content: center;  /* تمركز العناصر */
+      gap: .75rem;
+    }
 
-/* الكبسولة (حجم متجاوب: من 320px إلى 720px تقريبًا) */
-.input-wrapper{
-  flex: 0 1 clamp(320px, 50vw, 720px);
-  height: 56px;             /* نفس الارتفاع السابق */
-}
+    /* الكبسولة (حجم متجاوب: من 320px إلى 720px تقريبًا) */
+    .input-wrapper{
+      flex: 0 1 clamp(320px, 50vw, 720px);
+      height: 56px;             /* نفس الارتفاع السابق */
+    }
 
-/* الأزرار بجانب الكبسولة وليس ممتدة بعرض الصفحة */
-.action-buttons{
-  order: 1;                 /* خلّها بعد خانة الكتابة (يمين في RTL) */
-  display: flex;
-  gap: .5rem;
-  flex: 0 0 auto;
-}
+    /* الأزرار بجانب الكبسولة وليس ممتدة بعرض الصفحة */
+    .action-buttons{
+      order: 1;                 /* خلّها بعد خانة الكتابة (يمين في RTL) */
+      display: flex;
+      gap: .5rem;
+      flex: 0 0 auto;
+    }
 
-/* للموبايل: أصغر قليلًا */
-@media (max-width: 768px){
-  .input-wrapper{ flex-basis: clamp(240px, 70vw, 560px); height: 50px; }
-  .icon-btn{ width: 44px; height: 44px; }
-}
+    /* للموبايل: أصغر قليلًا */
+    @media (max-width: 768px){
+      .input-wrapper{ flex-basis: clamp(240px, 70vw, 560px); height: 50px; }
+      .icon-btn{ width: 44px; height: 44px; }
+    }
 
-/* لو ودّك الكبسولة أقصر/أطول عدّل القيم داخل clamp */
+    /* لو ودّك الكبسولة أقصر/أطول عدّل القيم داخل clamp */
 
     /* ===========================
        الشريط السفلي (شفاف فوق الأمواج)
@@ -240,24 +240,24 @@
       text-align:center; font-size:.85rem; margin-top:.75rem; color:var(--placeholder-color);
       text-wrap:balance;
     }
-.top-btn {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  z-index: 10;
-}
+    .top-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 10;
+    }
 
-.top-btn .btn {
-  background: rgba(0, 0, 0, 0.6); /* شفاف مثل الشريط */
-  backdrop-filter: saturate(120%) blur(6px);
-  border-radius: 2em;
-  transition: all 0.3s ease;
-}
+    .top-btn .btn {
+      background: rgba(0, 0, 0, 0.6); /* شفاف مثل الشريط */
+      backdrop-filter: saturate(120%) blur(6px);
+      border-radius: 2em;
+      transition: all 0.3s ease;
+    }
 
-.top-btn .btn:hover {
-  background: linear-gradient(90deg, #a47cf3, #683fea);
-  transform: translateY(-2px);
-}
+    .top-btn .btn:hover {
+      background: linear-gradient(90deg, #a47cf3, #683fea);
+      transform: translateY(-2px);
+    }
 
     /* موبايل */
     @media (max-width:768px){
@@ -284,12 +284,12 @@
       <div class="wave waveBottom" style="background-image:url('https://front-end-noobs.com/jecko/img/wave-bot.png')"></div>
     </div>
   </div>
- 
+
   <!-- الواجهة فوق الأمواج -->
-<header class="header">
-  <h1 class="title">مرحبًا بك </h1>
-  <p class="subtitle">أنا هنا لأساعدك، ما الذي تود القيام به اليوم؟</p>
-</header>
+  <header class="header">
+    <h1 class="title">مرحبًا بك </h1>
+    <p class="subtitle">أنا هنا لأساعدك، ما الذي تود القيام به اليوم؟</p>
+  </header>
   <div class="chat-list"></div>
 
   <div class="typing-area">
@@ -329,30 +329,39 @@
     let userMessage = null;
     let isResponseGenerating = false;
 
-// --- استبدال الردود الجاهزة بالربط مع n8n ---
-const N8N_WEBHOOK = "https://n8n.nmkqr.org/webhook-test/mega-bot"; 
-// عدّل الرابط فوق حسب رابط الـ Webhook عندك
+    // --- ربط مع n8n ---
+    const N8N_WEBHOOK = "https://n8n.nmkqr.org/webhook-test/mega-bot"; // عدّل إذا احتجت
 
-async function fetchFromN8N(promptText){
-  try{
-    const res = await fetch(N8N_WEBHOOK, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        user_message: promptText,
-        session_id: localStorage.getItem("mega_bot_session") || crypto.randomUUID(),
-        ts: Date.now()
-      })
-    });
+    function getSessionId(){
+      let s = localStorage.getItem("mega_bot_session");
+      if(!s){
+        s = crypto.randomUUID();
+        localStorage.setItem("mega_bot_session", s);
+      }
+      return s;
+    }
 
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    return data.reply || "— لم يصل رد من الخادم —";
-  }catch(err){
-    console.error(err);
-    return "⚠️ حدث خطأ أثناء الاتصال بـ n8n.";
-  }
-}
+    async function fetchFromN8N(promptText){
+      try{
+        const res = await fetch(N8N_WEBHOOK, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_message: promptText,
+            session_id: getSessionId(),
+            ts: Date.now()
+          })
+        });
+
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        return data.reply || "— لم يصل رد من الخادم —";
+      }catch(err){
+        console.error(err);
+        return "⚠️ حدث خطأ أثناء الاتصال بـ n8n.";
+      }
+    }
+
     // تحميل الثيم من التخزين
     const loadThemeFromLocalstorage = () => {
       const isLightMode = (localStorage.getItem("themeColor") === "light_mode");
@@ -379,22 +388,14 @@ async function fetchFromN8N(promptText){
           clearInterval(typingInterval);
           isResponseGenerating = false;
           incomingMessageDiv.querySelector(".icon").classList.remove("hide");
-          // MERGE:n8n -> window.dispatchEvent(new CustomEvent('bot:replyDone',{detail:{text}}));
+          // window.dispatchEvent(new CustomEvent('bot:replyDone',{detail:{text}}));
         }
         chatContainer.scrollTo(0, chatContainer.scrollHeight);
       }, 30);
     };
 
-// عرض رد من n8n بدلاً من الردود الجاهزة
-const showResponseFromN8N = (incomingMessageDiv, textElement) => {
-  (async () => {
-    const reply = await fetchFromN8N(userMessage);
-    showTypingEffect(reply, textElement, incomingMessageDiv);
-  })();
-};
-
-    // شاشة تحميل للرد
-    const showLoadingAnimation = () => {
+    // شاشة تحميل + جلب رد من n8n
+    function showLoadingAndFetch(userText){
       const html = `
         <div class="message-content">
           <img class="avatar" src="images/gemini.svg" alt="Gemini avatar">
@@ -409,11 +410,17 @@ const showResponseFromN8N = (incomingMessageDiv, textElement) => {
       const incoming = createMessageElement(html, "incoming", "loading");
       chatContainer.appendChild(incoming);
       chatContainer.scrollTo(0, chatContainer.scrollHeight);
+
       const textElement = incoming.querySelector(".text");
 
-      // MERGE:n8n -> استبدل هذا بـ fetch لِـ Webhook
-      showPredefinedResponse(incoming, textElement);
-    };
+      (async () => {
+        const reply = await fetchFromN8N(userText);
+        incoming.classList.remove("loading");
+        const loader = incoming.querySelector(".loading-indicator");
+        if (loader) loader.style.display = "none";
+        showTypingEffect(reply, textElement, incoming);
+      })();
+    }
 
     // نسخ نص رسالة
     window.copyMessage = (btn) => {
@@ -443,51 +450,26 @@ const showResponseFromN8N = (incomingMessageDiv, textElement) => {
       document.body.classList.add("hide-header");
       chatContainer.scrollTo(0, chatContainer.scrollHeight);
 
-const showLoadingAnimation = () => {
-  const html = `
-    <div class="message-content">
-      <img class="avatar" src="images/gemini.svg" alt="Gemini avatar">
-      <p class="text"></p>
-      <div class="loading-indicator">
-        <div class="loading-bar"></div>
-        <div class="loading-bar"></div>
-        <div class="loading-bar"></div>
-      </div>
-    </div>
-    <span onclick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
-  `;
+      // عرض اللودر ثم جلب رد n8n
+      showLoadingAndFetch(userMessage);
+    }; // <-- مهم جدًا إغلاق الدالة هنا
 
-  const incoming = createMessageElement(html, "incoming", "loading");
-  chatContainer.appendChild(incoming);
-  chatContainer.scrollTo(0, chatContainer.scrollHeight);
-
-  const textElement = incoming.querySelector(".text");
-
-  // جب الرد من n8n ثم أوقف التحميل واعرضه بتأثير الكتابة
-  (async () => {
-    const reply = await fetchFromN8N(userMessage);
-    incoming.classList.remove("loading");
-    const loader = incoming.querySelector(".loading-indicator");
-    if (loader) loader.style.display = "none";
-    showTypingEffect(reply, textElement, incoming);
-  })();
-};
     // تبديل الثيم
     toggleThemeButton.addEventListener("click", () => {
       const isLightMode = document.body.classList.toggle("light_mode");
       localStorage.setItem("themeColor", isLightMode ? "light_mode" : "dark_mode");
       toggleThemeButton.innerText = isLightMode ? "dark_mode" : "light_mode";
-      // MERGE:n8n -> window.dispatchEvent(new CustomEvent('ui:themeChanged',{detail:{mode:isLightMode?'light':'dark'}}));
+      // window.dispatchEvent(new CustomEvent('ui:themeChanged',{detail:{mode:isLightMode?'light':'dark'}}));
     });
 
     // حذف المحادثة
     deleteChatButton.addEventListener("click", () => {
       chatContainer.innerHTML = "";
       document.body.classList.remove("hide-header");
-      // MERGE:n8n -> fetch('https://YOUR_N8N_WEBHOOK_URL/clear',{method:'POST'});
+      // fetch('https://YOUR_N8N_WEBHOOK_URL/clear',{method:'POST'});
     });
 
-    // اقتراحات جاهزة
+    // اقتراحات (إن وُجدت عناصر .suggestion في الصفحة)
     suggestions.forEach(s => {
       s.addEventListener("click", () => {
         userMessage = s.querySelector(".text").innerText;
@@ -507,4 +489,3 @@ const showLoadingAnimation = () => {
   </script>
 </body>
 </html>
-
