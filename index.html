@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mega-Bot AI</title>
+
+  <!-- خط Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <!-- أيقونات Google -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+  <style>
+    /* ===========================
+       ثيم عام (دارك/لايت)
+       =========================== */
+    :root{
+      --text-color:#E3E3E3;
+      --subheading-color:#A6A6A6;
+      --placeholder-color:#A6A6A6;
+      --primary-color:#242424;
+      --secondary-color:#383838;
+      --secondary-hover-color:#444;
+    }
+    .light_mode{
+      --text-color:#222;
+      --subheading-color:#909090;
+      --placeholder-color:#6C6C6C;
+      --primary-color:#FFFFFF;
+      --secondary-color:#E9EEF6;
+      --secondary-hover-color:#DBE1EA;
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif;}
+    body{
+      background:var(--primary-color);
+      color:var(--text-color);
+      min-height:100dvh;
+      position:relative;
+      overflow-x:hidden;
+    }
+/* توسيط العنوان والوصف في منتصف الصفحة */
+.header{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  margin:0;
+  padding:0;
+  z-index:1; /* فوق الأمواج */
+}
+
+/* أحجام أصغر للجوال */
+@media (max-width:768px){
+  .title{   font-size:2rem;  line-height:2.5rem; }
+  .subtitle{font-size:1.2rem; line-height:2rem; }
+}
+
+    /* ===========================
+       خلفية الأمواج المتحركة
+       =========================== */
+    @keyframes move_wave {
+      0%   { transform: translateX(0)    translateZ(0) scaleY(1); }
+      50%  { transform: translateX(-25%) translateZ(0) scaleY(.65); }
+      100% { transform: translateX(-50%) translateZ(0) scaleY(1); }
+    }
+    .waveWrapper{
+      position:absolute; inset:0; margin:auto; overflow:hidden;
+      z-index:0; pointer-events:none;
+    }
+    .waveWrapperInner{
+      position:absolute; width:100%; height:100%;
+      bottom:-1px; overflow:hidden;
+      background-image:linear-gradient(to top,#86377b 20%, #27273c 80%);
+    }
+    .bgTop{z-index:15; opacity:.5;}
+    .bgMiddle{z-index:10; opacity:.75;}
+    .bgBottom{z-index:5;}
+
+    .wave{
+      position:absolute; left:0; width:200%; height:100%;
+      background-repeat:repeat no-repeat;
+      background-position:0 100%;
+      transform-origin:center bottom;
+      opacity:.9;
+      filter: drop-shadow(0 -6px 10px rgba(0,0,0,.35));
+    }
+    .waveTop   { background-size:50% 180px; }
+    .waveMiddle{ background-size:50% 220px; }
+    .waveBottom{ background-size:50% 180px; }
+
+    .waveAnimation .waveTop    { animation: move_wave 9s  linear infinite 1s; }
+    .waveAnimation .waveMiddle { animation: move_wave 10s linear infinite; }
+    .waveAnimation .waveBottom { animation: move_wave 15s linear infinite; }
+
+    @media (prefers-reduced-motion: reduce){
+      .waveAnimation .waveTop,
+      .waveAnimation .waveMiddle,
+      .waveAnimation .waveBottom{ animation:none; }
+    }
+    body.hide-header .header{ display:none; }
+    .title{
+      width:fit-content; font-size:3rem; line-height:4rem; font-weight:600;
+      background:linear-gradient(to right,#4285f4,#d96570);
+      -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .subtitle{ font-size:2.2rem; line-height:3rem; color:var(--subheading-color); }
+
+    .suggestion-list{
+      width:100%; list-style:none; display:flex; gap:1.25rem;
+      margin-top:9vh; overflow:auto; scroll-snap-type:x mandatory; scrollbar-width:none;
+      position:relative; z-index:1;
+    }
+    .suggestion{
+      cursor:pointer; padding:1.25rem; width:222px; flex-shrink:0; display:flex; flex-direction:column;
+      align-items:flex-start; border-radius:.75rem; justify-content:space-between;
+      background:var(--secondary-color); transition:.2s ease; scroll-snap-align:start;
+    }
+    .suggestion:hover{ background:var(--secondary-hover-color); }
+    .suggestion .text{ color:var(--text-color); font-weight:400; }
+    .suggestion .icon{
+      width:42px; height:42px; display:flex; font-size:1.3rem; margin-top:1.25rem;
+      align-items:center; border-radius:50%; justify-content:center; color:var(--text-color); background:var(--primary-color);
+    }
+
+    .chat-list{
+      padding:2rem 1rem 12rem; max-height:100vh; overflow-y:auto;
+      scrollbar-color:#999 transparent; position:relative; z-index:1;
+    }
+    .message.incoming{ margin-top:1.5rem; }
+    .message .message-content{ display:flex; gap:1rem; width:100%; align-items:flex-start; }
+    .message .text{ white-space:pre-wrap; }
+    .message.error .text{ color:#e55865; }
+    .message.loading .text{ display:none; }
+    .avatar{ width:40px; height:40px; object-fit:cover; border-radius:50%; }
+    .message.loading .avatar{ animation: rotate 3s linear infinite; }
+    @keyframes rotate{ 100%{ transform:rotate(360deg); } }
+
+    .message .icon{
+      color:var(--text-color); cursor:pointer; height:35px; width:35px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center; background:none; font-size:1.25rem;
+      margin-inline-start:3.5rem; visibility:hidden;
+    }
+    .message .icon.hide{ visibility:hidden; }
+    .message:not(.loading,.error):hover .icon:not(.hide){ visibility:visible; }
+    .message .icon:hover{ background:var(--secondary-hover-color); }
+
+    .loading-indicator{ display:none; gap:.8rem; width:100%; flex-direction:column; }
+    .message.loading .loading-indicator{ display:flex; }
+    .loading-bar{
+      height:11px; width:100%; border-radius:.135rem; background-position:-800px 0;
+      background:linear-gradient(to right,#4285f4, var(--primary-color), #4285f4);
+      animation: loading 3s linear infinite;
+    }
+    .loading-bar:last-child{ width:70%; }
+    @keyframes loading{
+      0%{ background-position:-800px 0; }
+      100%{ background-position:800px 0; }
+    }
+/* === تكبير/تصغير ذكي لحجم خانة الكتابة مع تمركز في النص === */
+.typing-area { background: transparent; }
+
+.typing-form{
+  max-width: 980px;         /* حدود عليا مثل الهيدر */
+  margin: 0 auto;
+  justify-content: center;  /* تمركز العناصر */
+  gap: .75rem;
+}
+
+/* الكبسولة (حجم متجاوب: من 320px إلى 720px تقريبًا) */
+.input-wrapper{
+  flex: 0 1 clamp(320px, 50vw, 720px);
+  height: 56px;             /* نفس الارتفاع السابق */
+}
+
+/* الأزرار بجانب الكبسولة وليس ممتدة بعرض الصفحة */
+.action-buttons{
+  order: 1;                 /* خلّها بعد خانة الكتابة (يمين في RTL) */
+  display: flex;
+  gap: .5rem;
+  flex: 0 0 auto;
+}
+
+/* للموبايل: أصغر قليلًا */
+@media (max-width: 768px){
+  .input-wrapper{ flex-basis: clamp(240px, 70vw, 560px); height: 50px; }
+  .icon-btn{ width: 44px; height: 44px; }
+}
+
+/* لو ودّك الكبسولة أقصر/أطول عدّل القيم داخل clamp */
+
+    /* ===========================
+       الشريط السفلي (شفاف فوق الأمواج)
+       =========================== */
+    .typing-area{
+      position:fixed; inset-inline:0; bottom:0; padding:1rem;
+      background:transparent; z-index:2;
+    }
+    .typing-form{
+      display:flex; align-items:center; gap:.75rem;
+    }
+    /* الأزرار أولاً (يمين الشاشة في RTL) */
+    .action-buttons{
+      display:flex; gap:.5rem; order:-1;
+    }
+    .icon-btn{
+      width:48px; height:48px; display:flex; align-items:center; justify-content:center;
+      border-radius:50%;
+      background: rgba(0,0,0,0.7); /* أغمق (أقل شفافية) */
+      color:var(--text-color);
+      backdrop-filter:saturate(120%) blur(2px);
+      cursor:pointer; transition:.2s ease;
+    }
+    .icon-btn:hover{ background:rgba(0,0,0,.5); }
+
+    .input-wrapper{ flex:1; height:56px; position:relative; display:flex; }
+    .typing-input{
+      width:100%; height:100%;
+      border:none; outline:none; resize:none; font-size:1rem; color:var(--text-color);
+      padding:1.1rem 4rem 1.1rem 1.5rem;
+      border-radius:100px;
+      background: rgba(0,0,0,0.7); /* أغمق (أقل شفافية) */
+    }
+    .typing-input::placeholder{ color:var(--placeholder-color); }
+    .typing-input:focus{ background:rgba(0,0,0,.45); }
+
+    #send-message-button{
+      position:absolute; inset-block:0; inset-inline-end:0; margin:auto;
+      transform:scale(0); border:none; outline:none; background:transparent;
+    }
+    .typing-input:valid ~ #send-message-button{ transform:scale(1); }
+
+    .disclaimer-text{
+      text-align:center; font-size:.85rem; margin-top:.75rem; color:var(--placeholder-color);
+      text-wrap:balance;
+    }
+.top-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+}
+
+.top-btn .btn {
+  background: rgba(0, 0, 0, 0.6); /* شفاف مثل الشريط */
+  backdrop-filter: saturate(120%) blur(6px);
+  border-radius: 2em;
+  transition: all 0.3s ease;
+}
+
+.top-btn .btn:hover {
+  background: linear-gradient(90deg, #a47cf3, #683fea);
+  transform: translateY(-2px);
+}
+
+    /* موبايل */
+    @media (max-width:768px){
+      .title{ font-size:2rem; line-height:2.6rem; }
+      .subtitle{ font-size:1.6rem; line-height:2.2rem; }
+      .icon-btn{ width:44px; height:44px; }
+      .input-wrapper{ height:50px; }
+      .typing-input{ padding:1.1rem 3.5rem 1.1rem 1.2rem; }
+      .disclaimer-text{ font-size:.75rem; margin-top:.5rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- خلفية الأمواج -->
+  <div class="waveWrapper waveAnimation" aria-hidden="true">
+    <div class="waveWrapperInner bgTop">
+      <div class="wave waveTop" style="background-image:url('https://front-end-noobs.com/jecko/img/wave-top.png')"></div>
+    </div>
+    <div class="waveWrapperInner bgMiddle">
+      <div class="wave waveMiddle" style="background-image:url('https://front-end-noobs.com/jecko/img/wave-mid.png')"></div>
+    </div>
+    <div class="waveWrapperInner bgBottom">
+      <div class="wave waveBottom" style="background-image:url('https://front-end-noobs.com/jecko/img/wave-bot.png')"></div>
+    </div>
+  </div>
+ 
+  <!-- الواجهة فوق الأمواج -->
+<header class="header">
+  <h1 class="title">مرحبًا بك </h1>
+  <p class="subtitle">أنا هنا لأساعدك، ما الذي تود القيام به اليوم؟</p>
+</header>
+  <div class="chat-list"></div>
+
+  <div class="typing-area">
+    <form class="typing-form" id="chat-form" data-n8n-hook="form-submit">
+      <!-- أزرار الحذف والثيم -->
+      <div class="action-buttons">
+        <span id="delete-chat-button" class="icon-btn material-symbols-rounded" title="حذف المحادثة" data-n8n-action="clear_chat">delete</span>
+        <span id="theme-toggle-button" class="icon-btn material-symbols-rounded" title="تبديل الثيم" data-n8n-action="toggle_theme">light_mode</span>
+      </div>
+
+      <!-- حقل الإدخال -->
+      <div class="input-wrapper">
+        <input type="text" placeholder="اكتب رسالتك هنا" class="typing-input" id="message-input" required data-n8n-field="user_message"/>
+        <button id="send-message-button" class="icon-btn material-symbols-rounded" type="submit" title="إرسال" data-n8n-action="send_message">send</button>
+      </div>
+    </form>
+
+    <p class="disclaimer-text">
+      قد يعرض Mega-Bot معلومات غير دقيقة، خاصةً عن الأشخاص. فضلاً تحقّق قبل الاعتماد.
+    </p>
+  </div>
+
+  <!-- صور مُحمّلة مسبقًا -->
+  <img src="images/user.jpg" style="display:none;" alt="User avatar" />
+  <img src="images/gemini.svg" style="display:none;" alt="Gemini avatar" />
+
+  <script>
+    // عناصر DOM
+    const typingForm = document.querySelector(".typing-form");
+    const chatContainer = document.querySelector(".chat-list");
+    const suggestions = document.querySelectorAll(".suggestion");
+    const toggleThemeButton = document.querySelector("#theme-toggle-button");
+    const deleteChatButton = document.querySelector("#delete-chat-button");
+    const messageInput = document.getElementById("message-input");
+
+    // حالة التطبيق
+    let userMessage = null;
+    let isResponseGenerating = false;
+
+// --- استبدال الردود الجاهزة بالربط مع n8n ---
+const N8N_WEBHOOK = "https://n8n.nmkqr.org/webhook-test/mega-bot"; 
+// عدّل الرابط فوق حسب رابط الـ Webhook عندك
+
+async function fetchFromN8N(promptText){
+  try{
+    const res = await fetch(N8N_WEBHOOK, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user_message: promptText,
+        session_id: localStorage.getItem("mega_bot_session") || crypto.randomUUID(),
+        ts: Date.now()
+      })
+    });
+
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    return data.reply || "— لم يصل رد من الخادم —";
+  }catch(err){
+    console.error(err);
+    return "⚠️ حدث خطأ أثناء الاتصال بـ n8n.";
+  }
+}
+    // تحميل الثيم من التخزين
+    const loadThemeFromLocalstorage = () => {
+      const isLightMode = (localStorage.getItem("themeColor") === "light_mode");
+      document.body.classList.toggle("light_mode", isLightMode);
+      toggleThemeButton.innerText = isLightMode ? "dark_mode" : "light_mode";
+    };
+
+    // إنشاء عنصر رسالة
+    const createMessageElement = (content, ...classes) => {
+      const div = document.createElement("div");
+      div.classList.add("message", ...classes);
+      div.innerHTML = content;
+      return div;
+    };
+
+    // تأثير الكتابة
+    const showTypingEffect = (text, textElement, incomingMessageDiv) => {
+      const words = text.split(" ");
+      let i = 0;
+      const typingInterval = setInterval(() => {
+        textElement.innerText += (i === 0 ? "" : " ") + words[i++];
+        incomingMessageDiv.querySelector(".icon").classList.add("hide");
+        if (i === words.length){
+          clearInterval(typingInterval);
+          isResponseGenerating = false;
+          incomingMessageDiv.querySelector(".icon").classList.remove("hide");
+          // MERGE:n8n -> window.dispatchEvent(new CustomEvent('bot:replyDone',{detail:{text}}));
+        }
+        chatContainer.scrollTo(0, chatContainer.scrollHeight);
+      }, 30);
+    };
+
+// عرض رد من n8n بدلاً من الردود الجاهزة
+const showResponseFromN8N = (incomingMessageDiv, textElement) => {
+  (async () => {
+    const reply = await fetchFromN8N(userMessage);
+    showTypingEffect(reply, textElement, incomingMessageDiv);
+  })();
+};
+
+    // شاشة تحميل للرد
+    const showLoadingAnimation = () => {
+      const html = `
+        <div class="message-content">
+          <img class="avatar" src="images/gemini.svg" alt="Gemini avatar">
+          <p class="text"></p>
+          <div class="loading-indicator">
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+          </div>
+        </div>
+        <span onclick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>`;
+      const incoming = createMessageElement(html, "incoming", "loading");
+      chatContainer.appendChild(incoming);
+      chatContainer.scrollTo(0, chatContainer.scrollHeight);
+      const textElement = incoming.querySelector(".text");
+
+      // MERGE:n8n -> استبدل هذا بـ fetch لِـ Webhook
+      showPredefinedResponse(incoming, textElement);
+    };
+
+    // نسخ نص رسالة
+    window.copyMessage = (btn) => {
+      const messageText = btn.parentElement.querySelector(".text").innerText;
+      navigator.clipboard.writeText(messageText);
+      btn.innerText = "done";
+      setTimeout(()=> btn.innerText = "content_copy", 1000);
+    };
+
+    // إرسال رسالة المستخدم
+    const handleOutgoingChat = () => {
+      userMessage = messageInput.value.trim();
+      if (!userMessage || isResponseGenerating) return;
+
+      isResponseGenerating = true;
+
+      const html = `
+        <div class="message-content">
+          <img class="avatar" src="images/user.jpg" alt="User avatar">
+          <p class="text"></p>
+        </div>`;
+      const outgoing = createMessageElement(html, "outgoing");
+      outgoing.querySelector(".text").innerText = userMessage;
+      chatContainer.appendChild(outgoing);
+
+      typingForm.reset();
+      document.body.classList.add("hide-header");
+      chatContainer.scrollTo(0, chatContainer.scrollHeight);
+
+const showLoadingAnimation = () => {
+  const html = `
+    <div class="message-content">
+      <img class="avatar" src="images/gemini.svg" alt="Gemini avatar">
+      <p class="text"></p>
+      <div class="loading-indicator">
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+      </div>
+    </div>
+    <span onclick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
+  `;
+
+  const incoming = createMessageElement(html, "incoming", "loading");
+  chatContainer.appendChild(incoming);
+  chatContainer.scrollTo(0, chatContainer.scrollHeight);
+
+  const textElement = incoming.querySelector(".text");
+
+  // جب الرد من n8n ثم أوقف التحميل واعرضه بتأثير الكتابة
+  (async () => {
+    const reply = await fetchFromN8N(userMessage);
+    incoming.classList.remove("loading");
+    const loader = incoming.querySelector(".loading-indicator");
+    if (loader) loader.style.display = "none";
+    showTypingEffect(reply, textElement, incoming);
+  })();
+};
+    // تبديل الثيم
+    toggleThemeButton.addEventListener("click", () => {
+      const isLightMode = document.body.classList.toggle("light_mode");
+      localStorage.setItem("themeColor", isLightMode ? "light_mode" : "dark_mode");
+      toggleThemeButton.innerText = isLightMode ? "dark_mode" : "light_mode";
+      // MERGE:n8n -> window.dispatchEvent(new CustomEvent('ui:themeChanged',{detail:{mode:isLightMode?'light':'dark'}}));
+    });
+
+    // حذف المحادثة
+    deleteChatButton.addEventListener("click", () => {
+      chatContainer.innerHTML = "";
+      document.body.classList.remove("hide-header");
+      // MERGE:n8n -> fetch('https://YOUR_N8N_WEBHOOK_URL/clear',{method:'POST'});
+    });
+
+    // اقتراحات جاهزة
+    suggestions.forEach(s => {
+      s.addEventListener("click", () => {
+        userMessage = s.querySelector(".text").innerText;
+        messageInput.value = userMessage;
+        handleOutgoingChat();
+      });
+    });
+
+    // إرسال الفورم
+    typingForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      handleOutgoingChat();
+    });
+
+    // تحميل الثيم
+    loadThemeFromLocalstorage();
+  </script>
+</body>
+</html>
